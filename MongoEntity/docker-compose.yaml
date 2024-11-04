@@ -1,0 +1,25 @@
+﻿services:
+  api:
+    image: api:mongoentity
+    build:
+      context: .
+    container_name: api_container
+    ports:
+      - 8080:8080
+    entrypoint: ["dotnet","MongoEntity.dll"]
+    networks:
+      - mongoentity
+ 
+  mongodb:
+    image: mongo:latest
+    container_name: mongo_container
+    ports:
+        - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root 
+      - MONGO_INITDB_ROOT_PASSWORD=Pass6321
+    networks:
+      - mongoentity
+networks:
+  mongoentity:
+    driver: bridge  
