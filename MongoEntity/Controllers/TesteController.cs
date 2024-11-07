@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace MongoEntity.Controllers
 {
@@ -23,22 +26,29 @@ namespace MongoEntity.Controllers
         [HttpGet]
         public IEnumerable<Teste> Get()
         {
-            return _md.Testes.ToList();
+            return _md.Testes.JoinItems(_md).ToList();
         }
 
-        [HttpPut]
-        public void Put(string teste)
+        [HttpGet("Items")]
+        public IEnumerable<TesteItem> Items()
         {
-            _md.Testes.Add(new Teste() { Name = teste,Id = new Guid()});
+            return _md.TesteItems.JoinTeste(_md).ToList();
+        }
+
+        [HttpPost]
+        public void Add(string teste)
+        {
+            _md.Testes.Add(new Teste() { Name = teste,Id = Guid.NewGuid()});
             _md.SaveChanges();
         }
 
-        [HttpPut("Items")]
-        public void PutItems(Guid teste, List<string> items)
+        [HttpPost("{Id}")]
+        public void AddtItems([FromRoute] Guid Id, List<string> items)
         {
             foreach (var item in items)
-                 _md.TesteItems.AddRange(new TesteItem() { Name=item,Id=new Guid(),TesteId=teste,CreatedAt=DateTime.UtcNow});
+                 _md.TesteItems.AddRange(new TesteItem() { Name=item,Id=Guid.NewGuid(),TesteId=Id,CreatedAt=DateTime.UtcNow});
             _md.SaveChanges();
         }
+
     }
 }

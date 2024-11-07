@@ -16,10 +16,10 @@ namespace MongoEntity
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Teste>().ToCollection("Teste")
-                .HasMany(x => x.Items)
-                .WithOne(x => x.Teste)
-                .HasForeignKey(x=>x.TesteId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasMany(x => x.Items);
+
+            modelBuilder.Entity<TesteItem>().ToCollection("TesteItems");
+                //.HasOne(x => x.Teste).WithMany(x => x.Items).HasForeignKey(x => x.TesteId);
 
         }
     }
